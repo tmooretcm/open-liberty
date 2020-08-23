@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,15 +35,18 @@ public class ParticipantResource implements XAResource {
     private static final String CLASS_NAME = ParticipantResource.class.getName();
     private static final TraceComponent TC = Tr.register(ParticipantResource.class);
 
-    private WSATParticipant participant;
-    private long timeoutMillis;
-    private long defaultTimeout;
+    private static final String ASYNC_TIMEOUT = "com.ibm.ws.wsat.asyncResponseTimeout";
+    private static final String DEFAULT_ASYNC_TIMEOUT = "30000";
+
+    private WSATParticipant participant = null;
+    private long timeoutMillis = 0;
+    private long defaultTimeout = 0;
 
     public ParticipantResource(WSATParticipant participant) {
         defaultTimeout = AccessController.doPrivileged(new PrivilegedAction<Long>() {
             @Override
             public Long run() {
-                return Long.parseLong(System.getProperty(WebClient.ASYNC_TIMEOUT, WebClient.DEFAULT_ASYNC_TIMEOUT));
+                return Long.parseLong(System.getProperty(ASYNC_TIMEOUT, DEFAULT_ASYNC_TIMEOUT));
             }
         });
         this.timeoutMillis = defaultTimeout;
@@ -52,7 +55,7 @@ public class ParticipantResource implements XAResource {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see javax.transaction.xa.XAResource#prepare(javax.transaction.xa.Xid)
      */
     @Override
@@ -83,7 +86,7 @@ public class ParticipantResource implements XAResource {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see javax.transaction.xa.XAResource#forget(javax.transaction.xa.Xid)
      */
     @Override
@@ -93,7 +96,7 @@ public class ParticipantResource implements XAResource {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see javax.transaction.xa.XAResource#commit(javax.transaction.xa.Xid, boolean)
      */
     @Override
@@ -118,7 +121,7 @@ public class ParticipantResource implements XAResource {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see javax.transaction.xa.XAResource#rollback(javax.transaction.xa.Xid)
      */
     @Override
@@ -143,7 +146,7 @@ public class ParticipantResource implements XAResource {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see javax.transaction.xa.XAResource#recover(int)
      */
     @Override
@@ -153,7 +156,7 @@ public class ParticipantResource implements XAResource {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see javax.transaction.xa.XAResource#start(javax.transaction.xa.Xid, int)
      */
     @Override
@@ -163,7 +166,7 @@ public class ParticipantResource implements XAResource {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see javax.transaction.xa.XAResource#end(javax.transaction.xa.Xid, int)
      */
     @Override
@@ -173,7 +176,7 @@ public class ParticipantResource implements XAResource {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see javax.transaction.xa.XAResource#isSameRM(javax.transaction.xa.XAResource)
      */
     @Override
@@ -183,7 +186,7 @@ public class ParticipantResource implements XAResource {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see javax.transaction.xa.XAResource#setTransactionTimeout(int)
      */
     @Override
@@ -198,7 +201,7 @@ public class ParticipantResource implements XAResource {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see javax.transaction.xa.XAResource#getTransactionTimeout()
      */
     @Override

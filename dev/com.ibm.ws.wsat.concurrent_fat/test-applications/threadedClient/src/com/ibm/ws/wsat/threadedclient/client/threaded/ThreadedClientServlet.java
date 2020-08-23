@@ -13,7 +13,6 @@ package com.ibm.ws.wsat.threadedclient.client.threaded;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Enumeration;
-import java.util.Map;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
@@ -55,7 +54,7 @@ public class ThreadedClientServlet extends HttpServlet {
 		private MultiThreaded proxy;
 		private URL location;
 		private int count;
-		private static final int timeout = 900; // Make sure clientInactivityTimeout, heuristicRetryWait & asyncResponseTimeout are consistent with this
+		private static final int timeout = 900;
 
 		public TestClass(MultiThreaded s, URL wsdlLocation, int count) {
 			this.proxy = s;
@@ -93,31 +92,28 @@ public class ThreadedClientServlet extends HttpServlet {
 				}
 
 				String response;
-				long time = System.nanoTime();
 				try {
-					Map<String, Object> requestContext = ((BindingProvider) proxy).getRequestContext();
-					requestContext.put(
+					BindingProvider bind = (BindingProvider) proxy;
+					bind.getRequestContext().put(
 							"javax.xml.ws.service.endpoint.address",
 							BASE_URL + "/threadedServer/MultiThreadedService");
-					requestContext.put("thread.local.request.context",
+					bind.getRequestContext().put("thread.local.request.context",
 							"true");
-					requestContext.put("javax.xml.ws.client.connectionTimeout", timeout * 1000);
-					requestContext.put("javax.xml.ws.client.receiveTimeout", timeout * 1000);
+
 					System.out.println("Thread " + count + ": " + "Get service from: " + location);
 					response = proxy.invoke();
 				} catch (Exception e) {
-					System.out.println("Thread " + count + ": " + "Failed to get service from: " + location + " after " + ((System.nanoTime() - time) / 1000000000l) + " seconds");
-					e.printStackTrace(System.out);
 					try {
 						ut.rollback();
 					} catch (Exception e1) {
 						e1.printStackTrace(System.out);
 					}
 					failedCount.incrementAndGet();
+					e.printStackTrace(System.out);
 					return;
 				}
 
-				System.out.println("Thread " + count + ": " + "proxy.invoke(): " + response + " after " + ((System.nanoTime() - time) / 1000000000l) + " seconds");
+				System.out.println("Thread " + count + ": " + "proxy.invoke(): " + response);
 				if (response.contains("failed")) {
 					failedCount.incrementAndGet();
 					System.out.println("Thread " + count + ": " + "Got failed in web service response.");

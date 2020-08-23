@@ -8,7 +8,7 @@ Bundle-Description: WebService AtomicTransaction Common bundle; version=${bVersi
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
-WS-TraceGroup: WSAT
+WS-TraceGroup: wsat
 
 Import-Package: \
   javax.xml.ws.*;version=!,\

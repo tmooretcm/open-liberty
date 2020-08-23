@@ -6,7 +6,8 @@ Bundle-Name: WebService AtomicTransaction Web Service Client
 Bundle-SymbolicName: com.ibm.ws.wsat.webclient
 Bundle-Description: WebService AtomicTransaction: Web Service Client bundle; version=${bVersion}
 
-WS-TraceGroup: WSAT
+WS-TraceGroup: \
+  wsATWebService
   
 Import-Package: \
  javax.xml.ws.*;version="[2.2,3)", \

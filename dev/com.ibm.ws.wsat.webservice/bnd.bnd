@@ -8,7 +8,8 @@ Bundle-Description: WebService AtomicTransaction: Web Service bundle; version=${
 
 Web-ContextPath: /ibm/wsatservice
 
-WS-TraceGroup: WSAT
+WS-TraceGroup: \
+  wsATWebService
   
 Import-Package: \
  !com.ibm.ws.wsat.interceptor, \
