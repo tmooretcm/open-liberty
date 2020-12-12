@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-// NOTE: This is a generated file. Do not edit it directly.
+
+// ************************************************************
+// THIS FILE HAS BEEN UPDATED SINCE IT WAS GENERATED.
+// ANY NEWLY GENERATED CODE MUST BE CAREFULLY MERGED WITH
+// THIS CODE.
+// ************************************************************
+
 package com.ibm.ws.javaee.ddmodel.webext;
 
 import com.ibm.ws.javaee.ddmodel.DDParser;
@@ -117,6 +123,14 @@ public class WebExtType extends com.ibm.ws.javaee.ddmodel.DDParser.ElementConten
     @Override
     public java.lang.String getContextRoot() {
         return context_root_uri != null ? context_root_uri.getValue() : null;
+    }
+
+    /**
+     * THIS METHOD NOT GENERATED
+     */
+    @Override
+    public boolean isContextRootFromConfigOverride() {
+        return false;
     }
 
     @Override

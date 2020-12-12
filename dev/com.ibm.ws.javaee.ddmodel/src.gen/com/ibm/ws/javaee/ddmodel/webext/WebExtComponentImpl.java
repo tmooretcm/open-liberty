@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-// NOTE: This is a generated file. Do not edit it directly.
+
+// ************************************************************
+// THIS FILE HAS BEEN UPDATED SINCE IT WAS GENERATED.
+// ANY NEWLY GENERATED CODE MUST BE CAREFULLY MERGED WITH
+// THIS CODE.
+// ************************************************************
+
 package com.ibm.ws.javaee.ddmodel.webext;
 
 import java.util.ArrayList;
@@ -182,6 +188,14 @@ private com.ibm.ws.javaee.dd.webext.WebExt delegate;
           } else {
                return context_root_uri == null ? delegate.getContextRoot() : context_root_uri;
           }
+     }
+
+    /**
+     * THIS METHOD NOT GENERATED
+     */
+     @Override
+     public boolean isContextRootFromConfigOverride() {
+          return true;
      }
 
      @Override
