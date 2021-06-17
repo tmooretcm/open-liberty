@@ -81,7 +81,8 @@ instrument.disabled: true
 	com.ibm.ws.timer;version=latest,\
 	com.ibm.ws.kernel.security.thread,\
 	com.ibm.ws.kernel.boot.core;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.wsbytebuffer;version=latest
 
 #  <property name="unittest.prop.com.ibm.ws.logging.exception.log.enabled" value="false" />
 #  file /dev/com.ibm.ws.channelfw/unittestports.properties
