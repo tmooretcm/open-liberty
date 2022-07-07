@@ -47,6 +47,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
+
 public class HttpUtils {
     public static final TraceComponent tc = Tr.register(HttpUtils.class);
 
@@ -81,18 +82,81 @@ public class HttpUtils {
             requestObject.addHeader(nvp.getName(), nvp.getValue());
         }
     }
+    
+    public void debugPostToEndPoint(String url,
+            @Sensitive List<NameValuePair> params,
+            String baUsername,
+            @Sensitive String baPassword,
+            String accessToken,
+            final List<NameValuePair> commonHeaders) {
+        if (!tc.isDebugEnabled()) {
+            // Trace isn't enabled, so don't bother executing the method
+            return;
+        }
+
+        // Trace the cURL command that will be used using the provided arguments
+
+        Tr.debug(tc, "postToEndpoint: url: " + url + " headers: " + commonHeaders + " params: " + "*****" + " baUsername: " + baUsername + " baPassword: " + (baPassword != null ? "****" : null) + " accessToken: " + accessToken);
+        StringBuffer sb = new StringBuffer();
+        sb.append("curl -k -v");
+        if (commonHeaders != null) {
+            for (Iterator<NameValuePair> i = commonHeaders.iterator(); i.hasNext();) {
+                NameValuePair nvp = i.next();
+                sb.append(" -H \"");
+                sb.append(nvp.getName());
+                sb.append(": ");
+                sb.append(nvp.getValue());
+                sb.append("\"");
+            }
+        }
+        if (params != null && params.size() > 0) {
+            sb.append(" -d \"");
+            for (Iterator<NameValuePair> i = params.iterator(); i.hasNext();) {
+                NameValuePair nvp = i.next();
+                String name = nvp.getName();
+                sb.append(name);
+                sb.append("=");
+                if (name.equals("client_secret")) {
+                    sb.append("*****");
+                } else {
+                    sb.append(nvp.getValue());
+                }
+
+                if (i.hasNext()) {
+                    sb.append("&");
+                }
+            }
+            sb.append("\"");
+        }
+        if (baUsername != null && baPassword != null) {
+            sb.append(" -u \"");
+            sb.append(baUsername);
+            sb.append(":");
+            sb.append("****");
+            sb.append("\"");
+        }
+        if (accessToken != null) {
+            sb.append(" -H \"Authorization: bearer ");
+            sb.append(accessToken);
+            sb.append("\"");
+        }
+        sb.append(" ");
+        sb.append(url);
+
+        Tr.debug(tc, "CURL Command: " + sb.toString());
+    }
 
     public HttpClient createHttpClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification) {
         return createHttpClient(sslSocketFactory, url, isHostnameVerification, false);
     }
 
     public HttpClient createHttpClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections) {
-        boolean isSecure = (url != null && url.startsWith("https:"));
-        return createHttpClient(sslSocketFactory, isSecure, isHostnameVerification, useSystemPropertiesForHttpClientConnections, null);
+        return createHttpClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections, null);
     }
     
-    private HttpClient createHttpClient(SSLSocketFactory sslSocketFactory, boolean isSecure, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections, BasicCredentialsProvider credentialsProvider) {
+    public HttpClient createHttpClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections, BasicCredentialsProvider credentialsProvider) {
         HttpClient client = null;
+        boolean isSecure = (url != null && url.startsWith("https:"));
         if (isSecure) {
             ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
             ThreadContextHelper.setClassLoader(getClass().getClassLoader());
@@ -123,6 +187,13 @@ public class HttpUtils {
     
     HttpClientBuilder createBuilder(boolean useSystemProperties) {
         return useSystemProperties ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
+    }
+    
+    public String getHttpJsonRequest(HttpClient client, String url) throws SocialLoginWrapperException, IOException {
+        if (client != null) {
+            return getHttpJsonRequestAsString(client, url);
+        }
+        return null;
     }
 
     public String getHttpJsonRequest(SSLSocketFactory sslSocketFactory, String url, boolean hostNameVerificationEnabled, boolean useSystemProperties) throws SocialLoginWrapperException, IOException {
